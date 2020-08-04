@@ -10,5 +10,5 @@ spring:
     username: sbsst
     password: sbs123414
 mybatis:
-  type-aliases-package: com.sbs.jhs.at.dto
+  type-aliases-package: com.sbs.rko.at.dto
   

@@ -1,4 +1,4 @@
-package com.sbs.jhs.at.dto;
+package com.sbs.rko.at.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

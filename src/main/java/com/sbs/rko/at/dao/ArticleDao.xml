@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sbs.rko.at.dao.ArticleDao">
+	<select id="getForPrintArticles" resultType="Article">
+		SELECT *
+		FROM article
+		WHERE displayStatus = 1
+		ORDER BY id DESC
+		LIMIT #{limitFrom}, #{itemsInAPage}
+	</select>
+
+	<select id="getForPrintArticleById" resultType="Article">
+		SELECT *
+		FROM article
+		WHERE id = #{id}
+	</select>
+	<select id="getTotalCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM article
+		WHERE displayStatus = 1
+		AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+	</select>
+	<select id="wrtie" resultType="Article">
+		INSERT INTO article
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		title = #{title},
+		`body` = #{body},
+		displayStatus = 1;
+	</select>
+	
+	<update id="delete" parameterType="map">
+		UPDATE article
+		SET delStatus = 1,
+		delDate = NOW(),
+		displayStatus = 0
+		WHERE id = #{id}
+	</update>
+	<update id="modify" parameterType="map">
+		UPDATE article
+		SET updateDate = NOW(),
+		title = #{title},
+		`body` = #{body}
+		WHERE id = #{id}
+	</update>
+</mapper>

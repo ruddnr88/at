@@ -26,6 +26,14 @@
 			</tr>
 		</tbody>
 	</table>
+	<div class="bnt_direct">
+		<div class="common_bnt"><a href="list" >게시글목록</a></div>
+		<div class="bnt_right">
+			<div class="common_bnt"><a href="delete?id=${article.id}" >삭 제</a></div>
+			<div class="common_bnt"><a href="modify?id=${article.id}" >수 정</a></div>
+		
+		</div>
+	</div>
 
 </div>
 

@@ -1,4 +1,4 @@
-package com.sbs.jhs.at;
+package com.sbs.rko.at;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

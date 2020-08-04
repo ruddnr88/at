@@ -1,4 +1,4 @@
-package com.sbs.jhs.at.util;
+package com.sbs.rko.at.util;
 
 public class Util {
 

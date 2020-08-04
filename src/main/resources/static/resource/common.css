@@ -18,6 +18,15 @@ label[for] {
 	cursor: pointer;
 	user-select: none;
 }
+button{
+	background: inherit ;
+	border:none; 
+	box-shadow:none; 
+	border-radius:0; 
+	padding:0; 
+	overflow:visible; 
+	cursor:pointer;
+}
 
 /* 라이브러리 */
 .block {
@@ -31,6 +40,12 @@ label[for] {
 .con {
 	margin-left: auto;
 	margin-right: auto;
+}
+.flex {
+	display: flex;
+}
+.flex-jc-c {
+	justify-content: center;
 }
 
 .table-box>table {
@@ -50,6 +65,101 @@ label[for] {
 }
 
 .page-title-box {
-	margin-top:30px;
-	margin-bottom:30px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+/*게시물 리스트 */
+.w_bnt_sbar {
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+.searchbar {
+	
+	text-align: right;
+}
+.searchbar .search {
+	height: 30px;
+}
+.searchbar  i {
+	padding:8px;
+	font-size:18px;
+}
+
+.listing {
+	margin-top:20px;
+}
+.listing  > li {
+	margin-right:5px;
+	
+}
+.listing  > li > a {
+	text-decoration: none;
+	padding:5px 10px;
+	border:1px solid #222222;
+}
+
+
+/*버튼 커스텀 */
+.common_bnt {
+	display: inline-block;
+	margin-top: 20px;
+}
+
+.common_bnt>a {
+	text-decoration: none;
+	padding: 10px 10px;
+	border: 1px solid #222222;
+	background: #eeeeee;
+}
+/*상세내용*/
+.bnt_right {
+	display: inline-block;
+	text-align: right;
+}
+
+.bnt_direct {
+	display: flex;
+	justify-content: space-between;
+}
+
+/*글쓰기*/
+.form1 {
+	display: block;
+	width: 90%;
+}
+
+.form1 .form-row {
+	align-items: center;
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.form1 .form-row>.label {
+	width: 100px;
+	font-size: 15px;
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.form1 .form-row>.input {
+	flex-grow: 1;
+}
+
+.form1 .form-row>.input>input, .form1 .form-row>.input>textarea {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 10px;
+}
+
+.form1 .btn {
+	text-align: right;
+}
+
+.write_bnt {
+	appearance: none;
+	width: 100px;
+	background: #eeeeee;
+	height: 35px;
 }
