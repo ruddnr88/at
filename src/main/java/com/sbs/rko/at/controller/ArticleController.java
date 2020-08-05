@@ -11,28 +11,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.rko.at.dto.Article;
+import com.sbs.rko.at.dto.ArticleReply;
 import com.sbs.rko.at.service.ArticleService;
 
 @Controller
 public class ArticleController {
 	@Autowired
 	private ArticleService articleService;
-
+	
+	
+	//게시물리스트보기
 	@RequestMapping("/article/list")
 	public String showList(Model model) {
-		
-
-		
 		int page = 1;
 		String searchKeywordType = "";
 		String searchKeyword = "";
 		
-		
 		int itemsInAPage = 10;
 		int totalCount = articleService.getTotalCount(searchKeywordType,searchKeyword);
 		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
-		
-	
 		
 		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("totalCount", totalCount);
@@ -43,37 +40,85 @@ public class ArticleController {
 
 		return "article/list";
 	}
-
+	
+	//게시물상세보기(디테일)
 	@RequestMapping("/article/detail")
 	public String showDetail(Model model, @RequestParam Map<String, Object> param) {
 		int id = Integer.parseInt((String) param.get("id"));
 
 		Article article = articleService.getForPrintArticleById(id);
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(article.getId());
 
 		model.addAttribute("article", article);
+		model.addAttribute("articleReplies", articleReplies);
 		return "article/detail";
 	}
-
+	//글쓰기이동
 	@RequestMapping("/article/write")
 	public String showWrite() {
 		return "article/write";
 	}
-
+	//글쓰기
 	@RequestMapping("/article/doWrite")
-	@ResponseBody
-	public String showDoWrite(Model model, @RequestParam Map<String, Object> param) {
+	public String DoWrite(Model model, @RequestParam Map<String, Object> param) {
 		
-		articleService.write(param);
-		return "html:<script> alert('게시물이 작성되었습니다.'); location.replace('list'); </script>";
+		int newArticleId = articleService.write(param);
+		String redirectUrl = (String)param.get("redirectUrl");
+		redirectUrl = redirectUrl.replace("#id", newArticleId + "");
+
+		return "redirect:" + redirectUrl;
 	}
-	@RequestMapping("/article/delete")
+	
+	//댓글작성
+	@RequestMapping("/article/doWriteReply")
+	public String doWriteReply(Model model, @RequestParam Map<String, Object> param) {
+		
+		int articleReplyId = articleService.writeReply(param);
+		
+		String redirectUrl = (String)param.get("redirectUrl");
+		redirectUrl = redirectUrl.replace("#id", articleReplyId + "");
+
+		return "redirect:" + redirectUrl;
+	}
+	//댓글삭제
+	@RequestMapping("/article/doDeleteReply")
 	@ResponseBody
+	public String doDeleteReply(Model model, @RequestParam Map<String, Object> param) {
+		int id = Integer.parseInt((String) param.get("id"));
+		articleService.doArticleReplydelete(id);
+	
+		return "html:<script> alert('"+id+"번 게시물이 삭제되었습니다.');location.href = document.referrer; </script>";
+	}
+	//댓글수정이동하기
+	@RequestMapping("/article/modifyReply")
+	public String showModifyReply(Model model, @RequestParam Map<String, Object> param,int id) {
+		
+		ArticleReply articleReply = articleService.getForPrintArticleReply(id);
+		model.addAttribute("articleReply", articleReply);
+
+		return "article/modifyReply";
+	}
+	//댓글수정
+	@RequestMapping("/article/doModifyReply")
+	public String doModifyReply(@RequestParam Map<String, Object> param, int id) {
+		int articleId = Integer.parseInt((String) param.get("articleId"));
+		articleService.modifyReply(param);
+		
+		String redirectUrl = (String)param.get("redirectUrl");
+		redirectUrl = redirectUrl.replace("#id", articleId + "");
+		
+		return "redirect:" + redirectUrl;
+	}
+	
+	//게시물삭제
+	@RequestMapping("/article/delete")
 	public String showDelete(Model model, @RequestParam Map<String, Object> param) {
 		int id = Integer.parseInt((String) param.get("id"));
 		articleService.delete(id);
 		return "html:<script> alert('"+id+"번 게시물이 삭제되었습니다.'); location.replace('list'); </script>";
 	}
 	
+	//게시물 수정이동
 	@RequestMapping("/article/modify")
 	public String showModify(Model model, @RequestParam Map<String, Object> param,int id) {
 		Article article = articleService.getForPrintArticleById(id);
@@ -81,9 +126,10 @@ public class ArticleController {
 		
 		return "article/modify";
 	}
+	//게시물수정
 	@RequestMapping("/article/doModify")
 	@ResponseBody
-	public String showDoModify(@RequestParam Map<String, Object> param, int id) {
+	public String DoModify(@RequestParam Map<String, Object> param, int id) {
 		
 		articleService.modify(param);
 		return "html:<script> alert('"+id+"번 게시물이 수정되었습니다.'); location.replace('./detail?id="+id+"'); </script>";

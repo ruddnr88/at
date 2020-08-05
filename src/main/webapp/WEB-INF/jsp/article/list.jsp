@@ -6,7 +6,7 @@
 <%@ include file="../part/head.jspf"%>
 
 <div class="table-box con">
-
+	<a href="/home/main">메인</a>
 	<h3>총 게시물수 : ${totalCount}</h3>
 	<div class="flex w_bnt_sbar">
 		<div class="common_bnt" style="margin:0;"><a href="write" >게시글 작성</a></div>

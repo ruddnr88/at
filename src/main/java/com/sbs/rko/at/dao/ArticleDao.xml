@@ -10,26 +10,55 @@
 		ORDER BY id DESC
 		LIMIT #{limitFrom}, #{itemsInAPage}
 	</select>
+	<select id="getForPrintArticleReplies" resultType="articleReply">
+		SELECT *
+		FROM articleReply
+		WHERE articleId = #{articleId}
+		ORDER BY id DESC
+	</select>
 
 	<select id="getForPrintArticleById" resultType="Article">
 		SELECT *
 		FROM article
 		WHERE id = #{id}
 	</select>
+	<select id="getForPrintArticleReply" resultType="articleReply">
+		SELECT *
+		FROM articleReply
+		WHERE id = #{id}
+	</select>
+	
 	<select id="getTotalCount" parameterType="map" resultType="int">
 		SELECT COUNT(*)
 		FROM article
 		WHERE displayStatus = 1
 		AND title LIKE CONCAT('%', #{searchKeyword}, '%')
 	</select>
-	<select id="wrtie" resultType="Article">
+	
+	<insert id="write" useGeneratedKeys="true"
+		keyProperty="id">
 		INSERT INTO article
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		title = #{title},
 		`body` = #{body},
 		displayStatus = 1;
-	</select>
+	</insert>
+	<insert id="writeReply" useGeneratedKeys="true"
+		keyProperty="id" parameterType="map">
+		INSERT INTO articleReply
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		articleId= #{articleId},
+		`body` = #{body},
+		displayStatus = 1;
+	</insert>
+	<update id="modifyReply" parameterType="map">
+		UPDATE articleReply
+		SET updateDate = NOW(),
+		`body` = #{body}
+		WHERE id = #{id}
+	</update>
 	
 	<update id="delete" parameterType="map">
 		UPDATE article
@@ -38,6 +67,11 @@
 		displayStatus = 0
 		WHERE id = #{id}
 	</update>
+	<delete id="articleReplyDelete" >
+		DELETE
+		FROM articleReply
+		WHERE id = #{id}
+	</delete>
 	<update id="modify" parameterType="map">
 		UPDATE article
 		SET updateDate = NOW(),

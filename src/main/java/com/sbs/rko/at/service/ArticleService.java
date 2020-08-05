@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.sbs.rko.at.dao.ArticleDao;
 import com.sbs.rko.at.dto.Article;
+import com.sbs.rko.at.dto.ArticleReply;
+import com.sbs.rko.at.util.Util;
 
 @Service
 public class ArticleService {
@@ -16,18 +18,21 @@ public class ArticleService {
 
 	public List<Article> getForPrintArticles(int page, int itemsInAPage) {
 		int limitFrom = (page - 1) * itemsInAPage;
-	
-		List<Article> articles = articleDao.getForPrintArticles(limitFrom,itemsInAPage);
-		
+
+		List<Article> articles = articleDao.getForPrintArticles(limitFrom, itemsInAPage);
+
 		return articles;
 	}
+
 	public Article getForPrintArticleById(int id) {
 		Article article = articleDao.getForPrintArticleById(id);
 
 		return article;
 	}
-	public void write(Map<String, Object> param) {
-		articleDao.wrtie(param);
+
+	public int write(Map<String, Object> param) {
+		articleDao.write(param);
+		return Util.getAsInt(param.get("id"));
 
 	}
 
@@ -39,13 +44,33 @@ public class ArticleService {
 		articleDao.modify(param);
 	}
 
-
-
 	public int getTotalCount(String searchKeywordType, String searchKeyword) {
-		return articleDao.getTotalCount(searchKeywordType,searchKeyword);
+		return articleDao.getTotalCount(searchKeywordType, searchKeyword);
 	}
 
-	
+	public int writeReply(Map<String, Object> param) {
+		articleDao.writeReply(param);
+		return Util.getAsInt(param.get("articleId"));
+	}
 
-	
+	public List<ArticleReply> getForPrintArticleReplies(int articleId) {
+		List<ArticleReply> articleReplies = articleDao.getForPrintArticleReplies(articleId);
+		return articleReplies;
+	}
+
+	public void doArticleReplydelete(int id) {
+		articleDao.articleReplyDelete(id);
+	}
+
+	public ArticleReply getForPrintArticleReply(int id) {
+		ArticleReply articleReply = articleDao.getForPrintArticleReply(id);
+		return articleReply;
+	}
+
+	public int modifyReply(Map<String, Object> param) {
+		articleDao.modifyReply(param);
+		
+		return Util.getAsInt(param.get("articleId"));
+	}
+
 }
