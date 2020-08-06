@@ -33,4 +33,8 @@ public interface ArticleDao {
 
 	public void modifyReply(Map<String, Object> param);
 
+	public void writeArticleReply(Map<String, Object> param);
+
+	
+
 }

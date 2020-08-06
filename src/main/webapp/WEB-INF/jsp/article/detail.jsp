@@ -27,18 +27,39 @@
 		</tbody>
 	</table>
 	<div class="bnt_direct">
-		<div class="common_bnt"><a href="list" >게시글목록</a></div>
+		<div class="common_bnt">
+			<a href="list">게시글목록</a>
+		</div>
 		<div class="bnt_right">
-			<div class="common_bnt"><a href="delete?id=${article.id}" >삭 제</a></div>
-			<div class="common_bnt"><a href="modify?id=${article.id}" >수 정</a></div>
-		
+			<div class="common_bnt">
+				<a href="delete?id=${article.id}">삭 제</a>
+			</div>
+			<div class="common_bnt">
+				<a href="modify?id=${article.id}">수 정</a>
+			</div>
+
 		</div>
 	</div>
+	<script>
+		function writeReply__submitForm(form) {
+			form.body.value = form.body.value.trim();
+			if (form.body.value.length == 0) {
+				alert('댓글내용을 입력해주세요.');
+				form.body.focus();
+				return;
+			}
+			$.post('./doWriteReplyAjax', {
+				articleId : article.id,
+				body : form.body.value
+			}, function(data) {
+				
+			}, 'json');
+			form.body.value = '';
+		}
+	</script>
 	<h2>댓글작성</h2>
-	<form action="doWriteReply" method="POST" class="write-form form1"
-		onsubmit="submitWriteReplyForm(this); return false;">
-		<input type="hidden" name="redirectUrl" value="/article/detail?id=#id">
-		<input type="hidden" name="articleId" value="${article.id}"/>
+	<form class="write-form form1" action="" onsubmit="writeReply__submitForm(this); return false;">
+	<input type="hidden" name="articleId" value="${article.id}">
 		<div class="form-row">
 			<div class="label">내용</div>
 			<div class="input">
@@ -47,8 +68,7 @@
 		</div>
 		<div class="con_butt" style="margin-top: 10px;">
 			<div class="input btn">
-				<input type="submit" class="write_bnt" value="전송" /> <input
-					class="write_bnt" type="button" onClick="cencle()" value="취소" />
+				<input type="submit" class="write_bnt" value="전송" />
 			</div>
 		</div>
 	</form>
@@ -74,42 +94,15 @@
 					<td>${articleReply.id}</td>
 					<td>${articleReply.regDate}</td>
 					<td>${articleReply.body}</td>
-					<td>
-						<a href="./doDeleteReply?id=${articleReply.id}"
+					<td><a href="./doDeleteReply?id=${articleReply.id}"
 						onclick="if ( confirm('삭제?') == false ) { return false; }">삭제</a>
-						<a href="./modifyReply?id=${articleReply.id}">수정</a>
-					</td>
+						<a href="./modifyReply?id=${articleReply.id}">수정</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
 
 </div>
-<script>
-	var submitWriteReplyForm = false;
 
-	function cencle() {
-		if (confirm("취소하시겠습니까?")) {
-			location.href = "list"
-		} else {
-			alert('아님말고');
-		}
-	}
-	function submitWriteReplyForm(form) {
-		if (submitWriteFormDone) {
-			alert('처리중입니다.');
-			return;
-		}
-		form.body.value = form.body.value.trim();
-		if (form.body.value.length == 0) {
-			alert('내용을 입력해주세요.');
-			form.body.focus();
-			return false;
-		}
-
-		form.submit();
-		submitWriteReplyForm = true;
-	}
-</script>
 
 <%@ include file="../part/foot.jspf"%>

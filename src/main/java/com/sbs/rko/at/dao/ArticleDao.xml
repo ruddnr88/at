@@ -53,6 +53,16 @@
 		`body` = #{body},
 		displayStatus = 1;
 	</insert>
+	
+	<insert id="writeArticleReply" useGeneratedKeys="true"
+		keyProperty="id" parameterType="map">
+		INSERT INTO articleReply
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		articleId= #{articleId},
+		`body` = #{body},
+		displayStatus = 1;
+	</insert>
 	<update id="modifyReply" parameterType="map">
 		UPDATE articleReply
 		SET updateDate = NOW(),

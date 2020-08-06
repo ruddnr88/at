@@ -9,7 +9,7 @@
 		<version>2.3.2.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.sbs.jhs</groupId>
+	<groupId>com.sbs.rko</groupId>
 	<artifactId>at</artifactId>
 	<version>1</version>
 	<packaging>war</packaging>
@@ -21,6 +21,11 @@
 	</properties>
 
 	<dependencies>
+		<!-- 스프링 JDBC -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
 		<!-- SQL 로거 -->
 		<dependency>
 			<groupId>org.bgee.log4jdbc-log4j2</groupId>

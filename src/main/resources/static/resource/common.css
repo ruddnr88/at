@@ -128,9 +128,11 @@ input[type='submit'], input[type='button'] {
 	justify-content: space-between;
 }
 /* 댓글리스트 */
+.reply_list{
+	margin-bottom: 30px;
+}
 .reply_list tr > th {
 	text-align: center;
-	margin-bottom: 30px;
 }
 /*글쓰기*/
 .form1 {

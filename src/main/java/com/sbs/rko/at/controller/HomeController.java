@@ -1,6 +1,9 @@
 package com.sbs.rko.at.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -8,8 +11,8 @@ import com.sbs.rko.at.dto.Article;
 
 @Controller
 public class HomeController {
-	@RequestMapping("/home/main")
-	public String showMain() {
+	@RequestMapping("/")
+	public String showMain(Model model, HttpSession session) {
 		return "home/main";
 	}
 	@RequestMapping("/home/testAjax")

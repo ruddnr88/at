@@ -25,21 +25,8 @@
 	</form>
 </div>
 <script>
-	var submitModifyFormDone = false;
-
-	function cencle() {
-		if (confirm("취소하시겠습니까?")) {
-			location.href = "list"
-		} else {
-			alert('아님말고');
-		}
-	}
-	function submitModifyFormDone(form) {
-		if (submitWriteFormDone) {
-			alert('처리중입니다.');
-			return;
-		}
 	
+	function submitModifyFormDone(form) {
 		form.body.value = form.body.value.trim();
 		if (form.body.value.length == 0) {
 			alert('내용을 입력해주세요.');
@@ -48,7 +35,6 @@
 		}
 
 		form.submit();
-		submitModifyFormDone = true;
 	}
 </script>
 <%@ include file="../part/foot.jspf"%>

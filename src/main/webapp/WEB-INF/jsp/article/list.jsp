@@ -4,7 +4,7 @@
 
 <c:set var="pageTitle" value="게시물 리스트" />
 <%@ include file="../part/head.jspf"%>
-
+${urlEncodedRequesturiQueryString}
 <div class="table-box con">
 	<a href="/home/main">메인</a>
 	<h3>총 게시물수 : ${totalCount}</h3>
