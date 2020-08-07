@@ -1,8 +1,8 @@
 package com.sbs.rko.at.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.rko.at.dto.Article;
 import com.sbs.rko.at.dto.ArticleReply;
+import com.sbs.rko.at.dto.ResultData;
 import com.sbs.rko.at.service.ArticleService;
 
 @Controller
@@ -23,7 +24,7 @@ public class ArticleController {
 	private ArticleService articleService;
 
 	// 게시물리스트보기
-	@RequestMapping("/article/list")
+	@RequestMapping("/usr/article/list")
 	public String showList(Model model, HttpServletRequest request) {
 		int page = 1;
 		String searchKeywordType = "";
@@ -44,8 +45,9 @@ public class ArticleController {
 	}
 
 	// 게시물상세보기(디테일)
-	@RequestMapping("/article/detail")
-	public String showDetail(Model model, @RequestParam Map<String, Object> param,int id, HttpServletRequest request) {
+	@RequestMapping("/usr/article/detail")
+	public String showDetail(Model model, @RequestParam Map<String, Object> param) {
+		int id = Integer.parseInt((String) param.get("id"));
 
 		Article article = articleService.getForPrintArticleById(id);
 		model.addAttribute("article", article);
@@ -56,16 +58,17 @@ public class ArticleController {
 	}
 
 	// 글쓰기이동
-	@RequestMapping("/article/write")
+	@RequestMapping("/usr/article/write")
 	public String showWrite() {
 		return "article/write";
 	}
 
 	// 글쓰기
-	@RequestMapping("/article/doWrite")
+	@RequestMapping("/usr/article/doWrite")
 	public String DoWrite(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
 
 		int newArticleId = articleService.write(param);
+		
 		String redirectUrl = (String) param.get("redirectUrl");
 		redirectUrl = redirectUrl.replace("#id", newArticleId + "");
 
@@ -73,7 +76,7 @@ public class ArticleController {
 	}
 
 	// 댓글작성
-//	@RequestMapping("/article/doWriteReply")
+//	@RequestMapping("/usr/article/doWriteReply")
 //	public String doWriteReply(Model model, @RequestParam Map<String, Object> param) {
 //
 //		int articleReplyId = articleService.writeReply(param);
@@ -85,15 +88,19 @@ public class ArticleController {
 //	}
 
 	// 댓글작성Ajax
-	@RequestMapping("/article/doWriteReplyAjax")
+	@RequestMapping("/usr/article/doWriteReplyAjax")
 	@ResponseBody
-	public Map<String, Object> doWriteReplyAjax(@RequestParam Map<String, Object> param,HttpServletRequest request) {
-		 Map<String, Object> rs = articleService.writeReply(param);
-		return rs;
+	public ResultData doWriteReplyAjax(@RequestParam Map<String, Object> param, HttpServletRequest request) {
+		Map<String, Object> rsDataBody = new HashMap<>();
+		param.put("memberId", request.getAttribute("loginedMemberId"));
+		int newArticleReplyId = articleService.writeReply(param);
+		rsDataBody.put("articleReplyId", newArticleReplyId);
+
+		return new ResultData("S-1", String.format("%d번 댓글이 생성되었습니다.", newArticleReplyId), rsDataBody);
 	}
 
 	// 댓글삭제
-	@RequestMapping("/article/doDeleteReply")
+	@RequestMapping("/usr/article/doDeleteReply")
 	@ResponseBody
 	public String doDeleteReply(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
 		int id = Integer.parseInt((String) param.get("id"));
@@ -103,7 +110,7 @@ public class ArticleController {
 	}
 
 	// 댓글수정이동하기
-	@RequestMapping("/article/modifyReply")
+	@RequestMapping("/usr/article/modifyReply")
 	public String showModifyReply(Model model, @RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
 
 		ArticleReply articleReply = articleService.getForPrintArticleReply(id);
@@ -113,7 +120,7 @@ public class ArticleController {
 	}
 
 	// 댓글수정
-	@RequestMapping("/article/doModifyReply")
+	@RequestMapping("/usr/article/doModifyReply")
 	public String doModifyReply(@RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
 		articleService.modifyReply(param);
 
@@ -124,7 +131,7 @@ public class ArticleController {
 	}
 
 	// 게시물삭제
-	@RequestMapping("/article/delete")
+	@RequestMapping("/usr/article/delete")
 	public String showDelete(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
 		int id = Integer.parseInt((String) param.get("id"));
 		articleService.delete(id);
@@ -132,7 +139,7 @@ public class ArticleController {
 	}
 
 	// 게시물 수정이동
-	@RequestMapping("/article/modify")
+	@RequestMapping("/usr/article/modify")
 	public String showModify(Model model, @RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
 		Article article = articleService.getForPrintArticleById(id);
 		model.addAttribute("article", article);
@@ -141,7 +148,7 @@ public class ArticleController {
 	}
 
 	// 게시물수정
-	@RequestMapping("/article/doModify")
+	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
 	public String DoModify(@RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
 

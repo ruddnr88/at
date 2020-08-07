@@ -11,15 +11,15 @@ import com.sbs.rko.at.dto.Article;
 
 @Controller
 public class HomeController {
-	@RequestMapping("/")
+	@RequestMapping("/usr/home/main")
 	public String showMain(Model model, HttpSession session) {
 		return "home/main";
 	}
-	@RequestMapping("/home/testAjax")
+	@RequestMapping("/usr/home/testAjax")
 	public String showtestAjax() {
 		return "home/testAjax";
 	}
-	@RequestMapping("/home/getDataTestAjax")
+	@RequestMapping("/usr/home/getDataTestAjax")
 	@ResponseBody
 	public Article getDataTestAjax() {
 		Article article = new Article(1,"2020-12-12 12:12:12","2020-12-12 12:12:12",true, "2020-12-12 12:12:12", false, "안녕하세융:)", "하하하하하 ");

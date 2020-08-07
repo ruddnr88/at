@@ -44,12 +44,12 @@
 		`body` = #{body},
 		displayStatus = 1;
 	</insert>
-	<insert id="writeReply" useGeneratedKeys="true"
-		keyProperty="id" parameterType="map">
+	<insert id="writeReply" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO articleReply
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		articleId= #{articleId},
+		memberId = #{memberId},
 		`body` = #{body},
 		displayStatus = 1;
 	</insert>

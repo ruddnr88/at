@@ -40,26 +40,26 @@
 
 		</div>
 	</div>
+	
 	<script>
-		function writeReply__submitForm(form) {
+		function ArticleWriteReplyForm__submit(form) {
 			form.body.value = form.body.value.trim();
 			if (form.body.value.length == 0) {
-				alert('댓글내용을 입력해주세요.');
+				alert('댓글을 입력해주세요.');
 				form.body.focus();
 				return;
 			}
 			$.post('./doWriteReplyAjax', {
-				articleId : article.id,
+				articleId : param.id,
 				body : form.body.value
 			}, function(data) {
-				
+				alert(data.msg);
 			}, 'json');
 			form.body.value = '';
 		}
 	</script>
 	<h2>댓글작성</h2>
-	<form class="write-form form1" action="" onsubmit="writeReply__submitForm(this); return false;">
-	<input type="hidden" name="articleId" value="${article.id}">
+	<form class="write-form form1" action="" onsubmit="ArticleWriteReplyForm__submit(this); return false;">
 		<div class="form-row">
 			<div class="label">내용</div>
 			<div class="input">
