@@ -14,6 +14,46 @@ CREATE TABLE article (
     title CHAR(200) NOT NULL,
     `body` LONGTEXT NOT NULL
 );
+# member 테이블 세팅
+CREATE TABLE `member` (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME,
+    updateDate DATETIME,
+    delDate DATETIME,
+	delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+	authStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+    loginId CHAR(20) NOT NULL UNIQUE,
+    loginPw CHAR(100) NOT NULL,
+    `name` CHAR(20) NOT NULL,
+    `nickname` CHAR(20) NOT NULL,
+    `email` CHAR(100) NOT NULL,
+    `phoneNo` CHAR(20) NOT NULL
+);
+#articleReplay 테이블 생성
+CREATE TABLE articleReply (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME,
+    updateDate DATETIME,
+    memberId INT(10) UNSIGNED NOT NULL,
+    articleId INT(10) UNSIGNED NOT NULL,
+    delDate DATETIME,
+	delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+	displayStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+    `body` LONGTEXT NOT NULL
+);
+
+# 댓글 테이블에 테스트 데이터 삽입
+INSERT INTO articleReply
+SET regDate = NOW(),
+updateDate = NOW(),
+articleId = 3,
+`body` = '내용유이ㅏ어ㅣ나ㅓㄹ닐';
+
+INSERT INTO articleReply
+SET regDate = NOW(),
+updateDate = NOW(),
+articleId = 2,
+`body` = '안녕하세요~~~~~~~';
 
 # article 테이블에 테스트 데이터 삽입
 INSERT INTO article
@@ -36,5 +76,37 @@ title = '제목3',
 `body` = '내용3',
 displayStatus = 1;
 
+# member 테이블에 테스트 데이터 삽입
+INSERT INTO `member`
+SET regDate = NOW(),
+updateDate = NOW(),
+loginId = 'admin',
+loginPw = SHA2('admin', 256),
+`name` = '관리자',
+`nickname` = '관리자',
+`email` = '',
+`phoneNo` = '';
+
+# articleReply 테이블에 테스트 데이터 삽입
+INSERT INTO articleReply
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+articleId = 3,
+displayStatus = 1,
+`body` = 'dffsd2';
+
+
+# 데이터 리셋
+TRUNCATE article;
+TRUNCATE articleReply;
+
+#테이블 검색
 SELECT *
 FROM article;
+
+SELECT *
+FROM articleReply;
+
+SELECT *
+FROM `member`;

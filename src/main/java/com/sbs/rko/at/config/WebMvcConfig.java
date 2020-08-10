@@ -1,4 +1,4 @@
-package com.sbs.rko.config;
+package com.sbs.rko.at.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

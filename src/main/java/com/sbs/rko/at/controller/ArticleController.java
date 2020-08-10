@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.rko.at.dto.Article;
 import com.sbs.rko.at.dto.ArticleReply;
+import com.sbs.rko.at.dto.Member;
 import com.sbs.rko.at.dto.ResultData;
 import com.sbs.rko.at.service.ArticleService;
+import com.sbs.rko.at.util.Util;
 
 @Controller
 public class ArticleController {
@@ -52,8 +54,7 @@ public class ArticleController {
 		Article article = articleService.getForPrintArticleById(id);
 		model.addAttribute("article", article);
 		
-		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(article.getId());
-		model.addAttribute("articleReplies", articleReplies);
+		
 		return "article/detail";
 	}
 
@@ -100,38 +101,58 @@ public class ArticleController {
 	}
 
 	// 댓글삭제
-	@RequestMapping("/usr/article/doDeleteReply")
+	@RequestMapping("/usr/article/doDeleteReplyAjax")
 	@ResponseBody
-	public String doDeleteReply(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
-		int id = Integer.parseInt((String) param.get("id"));
-		articleService.doArticleReplydelete(id);
+	public ResultData doDeleteReplyAjax(int id) {
+		articleService.deleteReply(id);
 
-		return "html:<script> alert('" + id + "번 댓글이 삭제되었습니다.');location.href = document.referrer; </script>";
+		return new ResultData("S-1", String.format("%d번 댓글을 삭제하였습니다.", id));
 	}
 
-	// 댓글수정이동하기
-	@RequestMapping("/usr/article/modifyReply")
-	public String showModifyReply(Model model, @RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
+//	// 댓글수정이동하기
+//	@RequestMapping("/usr/article/modifyReply")
+//	public String showModifyReply(Model model, @RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
+//
+//		ArticleReply articleReply = articleService.getForPrintArticleReply(id);
+//		model.addAttribute("articleReply", articleReply);
+//
+//		return "article/modifyReply";
+//	}
 
-		ArticleReply articleReply = articleService.getForPrintArticleReply(id);
-		model.addAttribute("articleReply", articleReply);
-
-		return "article/modifyReply";
+	// 댓글수정Ajax
+	@RequestMapping("/usr/article/doModifyReplyAjax")
+	@ResponseBody
+	public ResultData doModifyReplyAjax(@RequestParam Map<String, Object> param, int id, HttpServletRequest req) {
+		Member loginedMember = (Member) req.getAttribute("loginedMember");
+		ArticleReply articleReply = articleService.getForPrintArticleReplyById(id);
+		
+		if ( articleService.actorCanModify(loginedMember, articleReply) == false ) {
+			return new ResultData("F-1", String.format("%d번 댓글을 수정할 권한이 없습니다.", id));
+		}
+		
+		Map<String, Object> modfiyReplyParam = Util.getNewMapOf(param, "id", "body");
+		ResultData rd = articleService.modifyReply(modfiyReplyParam);
+		
+		return rd;
 	}
+	//댓글리스트Ajax
+	@RequestMapping("/usr/article/getForPrintArticleReplies")
+	@ResponseBody
+	public ResultData getForPrintArticleReplies(@RequestParam Map<String, Object> param,HttpServletRequest req) {
+		Member loginedMember = (Member)req.getAttribute("loginedMember");
+		Map<String, Object> rsDataBody = new HashMap<>();
+		
+		param.put("actor", loginedMember);
 
-	// 댓글수정
-	@RequestMapping("/usr/article/doModifyReply")
-	public String doModifyReply(@RequestParam Map<String, Object> param, int id, HttpServletRequest request) {
-		articleService.modifyReply(param);
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(param);
+		rsDataBody.put("articleReplies", articleReplies);
 
-		String redirectUrl = (String) param.get("redirectUrl");
-		redirectUrl = redirectUrl.replace("#id", id + "");
-
-		return "redirect:" + redirectUrl;
+		return new ResultData("S-1", String.format("%d개의 댓글을 불러왔습니다.", articleReplies.size()), rsDataBody);
 	}
 
 	// 게시물삭제
 	@RequestMapping("/usr/article/delete")
+	@ResponseBody
 	public String showDelete(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
 		int id = Integer.parseInt((String) param.get("id"));
 		articleService.delete(id);

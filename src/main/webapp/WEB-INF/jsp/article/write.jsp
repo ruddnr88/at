@@ -8,7 +8,7 @@
 <div class="table-box con">
 	<form action="doWrite" method="POST" class="write-form form1"
 		onsubmit="ArticleWriteForm__submit(this); return false;">
-		<input type="hidden" name="redirectUrl" value="/article/detail?id=#id">
+		<input type="hidden" name="redirectUrl" value="/usr/article/detail?id=#id">
 		<div class="form-row">
 			<div class="label">제목</div>
 			<div class="input">

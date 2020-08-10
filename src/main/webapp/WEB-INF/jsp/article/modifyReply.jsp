@@ -9,7 +9,7 @@
 	<form action="doModifyReply" method="POST" class="write-form form1"
 		onsubmit="submitModifyFormDone(this); return false;">
 		<input type="hidden" name="id" value="${articleReply.id}">
-		<input type="hidden" name="redirectUrl" value="/article/detail?id=#id">
+		<input type="hidden" name="redirectUrl" value="${param.redirectUrl}">
 		<div class="form-row">
 			<div class="label">내용</div>
 			<div class="input">

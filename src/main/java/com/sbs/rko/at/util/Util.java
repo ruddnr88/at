@@ -1,9 +1,11 @@
 package com.sbs.rko.at.util;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Util {
-	//모든 숫자타입을 int로 바꿔주는 메서드
+	// 모든 숫자타입을 int로 바꿔주는 메서드
 	public static int getAsInt(Object object) {
 		if (object instanceof BigInteger) {
 			return ((BigInteger) object).intValue();
@@ -15,6 +17,15 @@ public class Util {
 			return Integer.parseInt((String) object);
 		}
 		return -1;
+	}
+
+	public static Map<String, Object> getNewMapOf(Map<String, Object> oldMap, String... keys) {
+		Map<String, Object> newMap = new HashMap<>();
+		for (String key : keys) {
+			newMap.put(key, oldMap.get(key));
+		}
+
+		return newMap;
 	}
 
 }
