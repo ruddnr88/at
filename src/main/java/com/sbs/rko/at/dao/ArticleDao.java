@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.sbs.rko.at.dto.Article;
-import com.sbs.rko.at.dto.ArticleReply;
 
 @Mapper
 public interface ArticleDao {
@@ -23,18 +22,6 @@ public interface ArticleDao {
 
 	int getTotalCount(String searchKeywordType, String searchKeyword);
 
-	void writeReply(Map<String, Object> param);
-
-	List<ArticleReply> getForPrintArticleReplies(Map<String, Object> param);
-
-	void deleteReply(@Param("id") int id);
-
-	ArticleReply getForPrintArticleReply(@Param("id") int id);
-
-	void modifyReply(Map<String, Object> param);
-
-	void writeArticleReply(Map<String, Object> param);
-
-	ArticleReply getForPrintArticleReplyById(@Param("id") int id);
+	
 
 }
