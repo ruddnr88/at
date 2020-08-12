@@ -1,13 +1,16 @@
 package com.sbs.rko.at.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sbs.rko.at.dao.ReplyDao;
+import com.sbs.rko.at.dto.File;
 import com.sbs.rko.at.dto.Member;
 import com.sbs.rko.at.dto.Reply;
 import com.sbs.rko.at.dto.ResultData;
@@ -17,18 +20,55 @@ import com.sbs.rko.at.util.Util;
 public class ReplyService {
 	@Autowired
 	private ReplyDao replyDao;
+	@Autowired
+	private FileService fileService;
 
 	public int writeReply(Map<String, Object> param) {
 		replyDao.writeReply(param);
-		return Util.getAsInt(param.get("id"));
+		int id = Util.getAsInt(param.get("id"));
+
+		String fileIdsStr = (String) param.get("fileIdsStr");
+
+		if (fileIdsStr != null && fileIdsStr.length() > 0) {
+			List<Integer> fileIds = Arrays.asList(fileIdsStr.split(",")).stream().map(s -> Integer.parseInt(s.trim()))
+					.collect(Collectors.toList());
+
+			// 파일이 먼저 생성된 후에, 관련 데이터가 생성되는 경우에는, file의 relId가 일단 0으로 저장된다.
+			// 그것을 뒤늦게라도 이렇게 고처야 한다.
+			for (int fileId : fileIds) {
+				fileService.changeRelId(fileId, id);
+			}
+		}
+		return id;
 	}
 
 	public List<Reply> getForPrintReplies(@RequestParam Map<String, Object> param) {
 		List<Reply> replies = replyDao.getForPrintReplies(param);
+		List<Integer> replyIds = replies.stream().map(reply -> reply.getId()).collect(Collectors.toList());
+		if (replyIds.size() > 0) {
+			Map<Integer, File> filesMap = fileService.getFilesMapKeyRelId("reply", replyIds, "common", "attachment", 1);
+
+			for (Reply reply : replies) {
+				File file = filesMap.get(reply.getId());
+
+				if (file != null) {
+					reply.getExtra().put("file__common__attachment__1", file);
+				}
+			}
+			filesMap = fileService.getFilesMapKeyRelId("reply", replyIds, "common", "attachment", 2);
+
+			for (Reply reply : replies) {
+				File file = filesMap.get(reply.getId());
+
+				if (file != null) {
+					reply.getExtra().put("file__common__attachment__2", file);
+				}
+			}
+		}
 		Member actor = (Member) param.get("actor");
 
 		for (Reply reply : replies) {
-			//출력용 부가 데이터 추가
+			// 출력용 부가 데이터 추가
 			updateForPrintInfo(actor, reply);
 		}
 
@@ -47,11 +87,12 @@ public class ReplyService {
 
 	// 액터가 해당 댓글을 삭제할 수 있는지 알려준다.
 	public boolean actorCanDelete(Member actor, Reply reply) {
-			return actorCanModify(actor, reply);
+		return actorCanModify(actor, reply);
 	}
 
 	public void deleteReply(int id) {
 		replyDao.deleteReply(id);
+		fileService.deleteFiles("reply", id);
 	}
 
 	public Reply getForPrintReply(int id) {

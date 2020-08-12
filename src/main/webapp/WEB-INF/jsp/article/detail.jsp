@@ -64,13 +64,56 @@
 				form.body.focus();
 				return;
 			}
-			$.post('./doWriteReplyAjax', {
-				articleId : param.id,
-				body : form.body.value
-			}, function(data) {
+			var startUploadFiles = function(onSuccess) {
+				if ( form.file__reply__0__common__attachment__1.value.length == 0 && form.file__reply__0__common__attachment__2.value.length == 0 ) {
+					onSuccess();
+					return;
+				}
 
-			}, 'json');
-			form.body.value = '';
+				var fileUploadFormData = new FormData(form); 
+				
+				fileUploadFormData.delete("relTypeCode");
+				fileUploadFormData.delete("relId");
+				fileUploadFormData.delete("body");
+				
+				$.ajax({
+					url : './../file/doUploadAjax',
+					data : fileUploadFormData,
+					processData : false,
+					contentType : false,
+					dataType:"json",
+					type : 'POST',
+					success : onSuccess
+				});
+			}
+			var startWriteReply = function(fileIdsStr, onSuccess) {
+				$.ajax({
+					url : './../reply/doWriteReplyAjax',
+					data : {
+						fileIdsStr: fileIdsStr,
+						body: form.body.value,
+						relTypeCode: form.relTypeCode.value,
+						relId: form.relId.value
+					},
+					dataType:"json",
+					type : 'POST',
+					success : onSuccess
+				});
+			};
+			startUploadFiles(function(data) {
+				var idsStr = '';
+				if ( data && data.body && data.body.fileIdsStr ) {
+					idsStr = data.body.fileIdsStr;
+				}
+				startWriteReply(idsStr, function(data) {
+					if ( data.msg ) {
+						alert(data.msg);
+					}
+					form.body.value = '';
+					form.file__reply__0__common__attachment__1.value = '';
+					form.file__reply__0__common__attachment__2.value = '';
+				});
+			});
 		}
 	</script>
 	<h2>댓글작성</h2>
@@ -87,9 +130,14 @@
 		</div>
 		<div class="con_butt flex flex-jc-e" style="margin-top: 10px;">
 			<div class="input btn">
-				<input type="file" accept="video/*"
-					capturename="file__articleReply__0__common__attachment__1"
-					value="첨부" />
+				<input type="file" accept="video/*" capture
+								name="file__reply__0__common__attachment__1"
+					value="첨부1" />
+			</div>
+			<div class="input btn">
+				<input type="file" accept="video/*" capture
+								name="file__reply__0__common__attachment__2"
+					value="첨부2" />
 			</div>
 			<div class="input btn">
 				<input type="submit" class="write_bnt" value="전송" />
@@ -226,14 +274,27 @@
 		html += '<td>' + reply.id + '</td>';
 		html += '<td>' + reply.regDate + '</td>';
 		html += '<td>' + reply.extra.writer + '</td>';
-		html += '<td class="article-reply-body">' + reply.body + '</td>';
+		html += '<td>';
+		html += '<div class="reply-body">' + reply.body + '</div>';
+		if (reply.extra.file__common__attachment__1) {
+            var file = reply.extra.file__common__attachment__1;
+            html += '<video controls src="/usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
+        }
+		if (reply.extra.file__common__attachment__2) {
+            var file = reply.extra.file__common__attachment__2;
+            html += '<video controls src="/usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
+        }
+		
+		html += '</td>';
 		html += '<td>';
 		if (reply.extra.actorCanDelete) {
 			html += '<button type="button" onclick="ReplyList__delete(this);">삭제</button>';
 		}
+		
 		if (reply.extra.actorCanModify) {
 			html += '<button type="button" onclick="ReplyList__showModifyFormModal(this);">수정</button>';
 		}
+		
 		html += '</td>';
 		html += '</tr>';
 		var $tr = $(html);

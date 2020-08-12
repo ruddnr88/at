@@ -11,13 +11,13 @@
 		<input type="hidden" name="redirectUrl" value="/usr/article/detail?id=#id">
 		<div class="form-row">
 			<div class="label">제목</div>
-			<div class="input">
+			<div class="input form-control-box">
 				<input name="title" type="text" autofocus placeholder="제목을 입력해주세요." />
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="label">내용</div>
-			<div class="input">
+			<div class="input form-control-box">
 				<textarea name="body" cols="40" rows="10" placeholder="내용을 입력하세요."></textarea>
 			</div>
 		</div>

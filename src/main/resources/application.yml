@@ -1,7 +1,7 @@
 server:
   port: 8085
 spring:
-  sevlet:
+  servlet:
     multipart:
       file-size-threshold: 1MB
       location: C:/temp

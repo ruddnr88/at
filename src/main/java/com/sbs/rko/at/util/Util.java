@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import org.springframework.cglib.core.internal.LoadingCache;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.cache.LoadingCache;
+
 public class Util {
-	// 모든 숫자타입을 int로 바꿔주는 메서드
 	public static int getAsInt(Object object) {
 		if (object instanceof BigInteger) {
 			return ((BigInteger) object).intValue();
@@ -25,11 +25,13 @@ public class Util {
 		} else if (object instanceof String) {
 			return Integer.parseInt((String) object);
 		}
+
 		return -1;
 	}
 
 	public static Map<String, Object> getNewMapOf(Map<String, Object> oldMap, String... keys) {
 		Map<String, Object> newMap = new HashMap<>();
+
 		for (String key : keys) {
 			newMap.put(key, oldMap.get(key));
 		}
@@ -54,7 +56,6 @@ public class Util {
 			return "img";
 		case "mp4":
 		case "avi":
-		case "mov":
 			return "video";
 		case "mp3":
 			return "audio";
@@ -75,8 +76,6 @@ public class Util {
 		case "png":
 			return ext;
 		case "mp4":
-			return ext;
-		case "mov":
 			return ext;
 		case "avi":
 			return ext;
@@ -146,7 +145,11 @@ public class Util {
 	}
 
 	public static <T extends Object> T getCacheData(LoadingCache cache, int key) {
-		return (T)cache.get(key);
+		try {
+			return (T)cache.get(key);
+		} catch (ExecutionException e) {
+			return null;
+		}
 	}
 
 }

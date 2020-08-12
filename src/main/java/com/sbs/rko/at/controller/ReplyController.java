@@ -89,6 +89,17 @@ public class ReplyController {
 
 			return new ResultData("S-1", String.format("%d개의 댓글을 불러왔습니다.", replies.size()), rsDataBody);
 		}
+		
+		
+		// 액터가 해당 댓글을 수정할 수 있는지 알려준다.
+		public boolean actorCanModify(Member actor, Reply reply) {
+			return actor != null && actor.getId() == reply.getMemberId() ? true : false;
+		}
+
+		// 액터가 해당 댓글을 삭제할 수 있는지 알려준다.
+		public boolean actorCanDelete(Member actor, Reply reply) {
+			return actorCanModify(actor, reply);
+		}
 
 
 }
