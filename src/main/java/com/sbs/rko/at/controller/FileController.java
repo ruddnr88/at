@@ -70,10 +70,11 @@ public class FileController {
 
 			if (fileInputNameBits[0].equals("file")) {
 				byte[] fileBytes = Util.getFileBytesFromMultipartFile(multipartFile);
-
+				
 				if ( fileBytes == null || fileBytes.length == 0 ) {
 					continue;
 				}
+				
 				String relTypeCode = fileInputNameBits[1];
 				int relId = Integer.parseInt(fileInputNameBits[2]);
 				String typeCode = fileInputNameBits[3];
@@ -91,6 +92,7 @@ public class FileController {
 				fileIds.add(fileId);
 			}
 		}
+
 		Map<String, Object> rsDataBody = new HashMap<>();
 		rsDataBody.put("fileIdsStr", Joiner.on(",").join(fileIds));
 		rsDataBody.put("fileIds", fileIds);

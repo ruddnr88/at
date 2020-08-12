@@ -26,13 +26,13 @@ public class ReplyController {
 	private ReplyService replyService;
 
 	// 댓글작성Ajax
-		@RequestMapping("/usr/article/doWriteReplyAjax")
+		@RequestMapping("/usr/reply/doWriteReplyAjax")
 		@ResponseBody
 		public ResultData doWriteReplyAjax(@RequestParam Map<String, Object> param, HttpServletRequest request) {
 			Map<String, Object> rsDataBody = new HashMap<>();
+
 			param.put("memberId", request.getAttribute("loginedMemberId"));
-			param.put("relTypeCode", "article");
-			Util.changeMapKey(param,"articleId", "relId");
+
 			int newReplyId = replyService.writeReply(param);
 			rsDataBody.put("replyId", newReplyId);
 
