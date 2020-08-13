@@ -11,8 +11,8 @@
 	if (historyBack) {
 		history.back();
 	}
-	var locationReplaceUrl = '${locationReplace}'.trim();
-	if (locationReplaceUrl) {
-		location.replace(locationReplaceUrl);
+	var redirectUri = '${redirectUri}'.trim();
+	if (redirectUri) {
+		location.replace(redirectUri);
 	}
-</script>
+</script> 

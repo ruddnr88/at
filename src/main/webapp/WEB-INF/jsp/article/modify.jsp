@@ -11,13 +11,13 @@
 		<input type="hidden" name="id" value="${article.id}">
 		<div class="form-row">
 			<div class="label">제목</div>
-			<div class="input">
+			<div class="input form-control-box">
 				<input name="title" type="text" autofocus  value="${article.title}"/>
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="label">내용</div>
-			<div class="input">
+			<div class="input form-control-box">
 				<textarea name="body" cols="40" rows="10" maxlength="2000">${article.body}</textarea>
 			</div>
 		</div>

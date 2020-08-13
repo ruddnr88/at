@@ -1,15 +1,16 @@
 package com.sbs.rko.at.dto;
 
 import java.util.Map;
-import java.sql.Blob;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString(exclude="body")
 public class File {
 	private int id;
 	private String regDate;

@@ -60,14 +60,14 @@ public class ArticleController {
 
 	// 글쓰기
 	@RequestMapping("/usr/article/doWrite")
-	public String DoWrite(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
+	public String doWrite(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
 
 		int newArticleId = articleService.write(param);
 
-		String redirectUrl = (String) param.get("redirectUrl");
-		redirectUrl = redirectUrl.replace("#id", newArticleId + "");
+		String redirectUri = (String) param.get("redirectUri");
+		redirectUri = redirectUri.replace("#id", newArticleId + "");
 
-		return "redirect:" + redirectUrl;
+		return "redirect:" + redirectUri;
 	}
 
 	

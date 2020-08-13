@@ -35,7 +35,7 @@
 				<th>제목</th>
 				<td>${article.title}</td>
 			</tr>
-			<tr>
+			<tr style="height: 200px;">
 				<th>내용</th>
 				<td>${article.body}</td>
 			</tr>
@@ -57,13 +57,18 @@
 	</div>
 
 	<script>
+		var ArticleWriteReplyForm__submitDone = false;
 		function ArticleWriteReplyForm__submit(form) {
+			if ( ArticleWriteReplyForm__submitDone ) {
+				alert('처리중입니다.');
+			}
 			form.body.value = form.body.value.trim();
 			if (form.body.value.length == 0) {
 				alert('댓글을 입력해주세요.');
 				form.body.focus();
 				return;
 			}
+			ArticleWriteReplyForm__submitDone = true;
 			var startUploadFiles = function(onSuccess) {
 				if ( form.file__reply__0__common__attachment__1.value.length == 0 && form.file__reply__0__common__attachment__2.value.length == 0 ) {
 					onSuccess();
@@ -112,10 +117,13 @@
 					form.body.value = '';
 					form.file__reply__0__common__attachment__1.value = '';
 					form.file__reply__0__common__attachment__2.value = '';
+
+					ArticleWriteReplyForm__submitDone = false;
 				});
 			});
 		}
 	</script>
+	<c:if test="${isLogined}">
 	<h2>댓글작성</h2>
 	<form class="write-form form1"
 		onsubmit="ArticleWriteReplyForm__submit(this); return false;">
@@ -123,27 +131,24 @@
 			type="hidden" name="relId" value="${article.id}" />
 		<div class="form-row">
 			<div class="label">내용</div>
-			<div class="input">
 				<textarea name="body" rows="5" style="width: 100%;"
 					placeholder="댓글내용을 입력하세요."></textarea>
-			</div>
 		</div>
 		<div class="con_butt flex flex-jc-e" style="margin-top: 10px;">
-			<div class="input btn">
-				<input type="file" accept="video/*" capture
+			<div class="form-control-box">
+				<input type="file" accept="video/*"
 								name="file__reply__0__common__attachment__1"
 					value="첨부1" />
 			</div>
-			<div class="input btn">
-				<input type="file" accept="video/*" capture
-								name="file__reply__0__common__attachment__2"
-					value="첨부2" />
+			<div class="form-control-box">
+				<input type="file" accept="video/*" name="file__reply__0__common__attachment__2"	value="첨부2" />
 			</div>
-			<div class="input btn">
+			<div class="form-control-box">
 				<input type="submit" class="write_bnt" value="전송" />
 			</div>
 		</div>
 	</form>
+	</c:if>
 	<h2>댓글리스트</h2>
 	<table class="article-reply-list-box reply_list">
 		<colgroup>
@@ -216,8 +221,7 @@
 		}, function(data) {
 			if (data.resultCode && data.resultCode.substr(0, 2) == 'S-') {
 				// 성공시에는 기존에 그려진 내용을 수정해야 한다.!!
-				var $tr = $('.article-reply-list-box tbody > tr[data-id="' + id
-						+ '"] .article-reply-body');
+				var $tr = $('.reply-list-box tbody > tr[data-id="' + id + '"] .reply-body')
 				$tr.empty().append(body);
 			}
 			ReplyList__hideModifyFormModal();
@@ -276,13 +280,11 @@
 		html += '<td>' + reply.extra.writer + '</td>';
 		html += '<td>';
 		html += '<div class="reply-body">' + reply.body + '</div>';
-		if (reply.extra.file__common__attachment__1) {
-            var file = reply.extra.file__common__attachment__1;
-            html += '<video controls src="/usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
-        }
-		if (reply.extra.file__common__attachment__2) {
-            var file = reply.extra.file__common__attachment__2;
-            html += '<video controls src="/usr/file/streamVideo?id=' + file.id + '">video not supported</video>';
+		if ( reply.extra.file__common__attachment ) {
+			for ( var no in reply.extra.file__common__attachment ) {
+				var file = reply.extra.file__common__attachment[no];
+	            html += '<div class="video-box"><video controls src="/usr/file/streamVideo?id=' + file.id + '">video not supported</video></div>';				
+			}
         }
 		
 		html += '</td>';

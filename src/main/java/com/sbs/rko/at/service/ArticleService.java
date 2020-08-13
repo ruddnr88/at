@@ -25,6 +25,7 @@ public class ArticleService {
 
 	public Article getForPrintArticleById(int id) {
 		Article article = articleDao.getForPrintArticleById(id);
+		
 
 		return article;
 	}
