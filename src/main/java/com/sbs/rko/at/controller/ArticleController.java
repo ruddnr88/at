@@ -1,5 +1,6 @@
 package com.sbs.rko.at.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,21 +23,60 @@ public class ArticleController {
 
 	// 게시물리스트보기
 	@RequestMapping("/usr/article/list")
-	public String showList(Model model, HttpServletRequest request) {
-		int page = 1;
-		String searchKeywordType = "";
-		String searchKeyword = "";
+	public String showList(Model model, String boardCode, String searchKeyword, String searchType,
+			@RequestParam(value = "page", defaultValue = "1") int page, HttpServletRequest request) {
 
+		if (searchType != null) {
+			searchType = searchType.trim();
+		}
+
+		if (searchKeyword != null) {
+			searchKeyword = searchKeyword.trim();
+		}
+		
+		Map<String, Object> getForPrintArticlesByParam = new HashMap();
+		getForPrintArticlesByParam.put("searchKeyword", searchKeyword);
+		getForPrintArticlesByParam.put("searchType", searchType);
+		
 		int itemsInAPage = 10;
-		int totalCount = articleService.getTotalCount(searchKeywordType, searchKeyword);
+		int limitCount = itemsInAPage;
+		int limitFrom = (page - 1) * itemsInAPage;
+		getForPrintArticlesByParam.put("limitCount", limitCount);
+		getForPrintArticlesByParam.put("limitFrom", limitFrom);
+		int totalCount = articleService.getTotalCount(getForPrintArticlesByParam);
 		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
+		
+		List<Article> articles = articleService.getForPrintArticles(getForPrintArticlesByParam);
+		
+		model.addAttribute("articles", articles);
 
 		model.addAttribute("totalPage", totalPage);
 		model.addAttribute("totalCount", totalCount);
-		model.addAttribute("page", page);
+		
+		int pageBoundSize = 5;
+		int pageStartsWith = page - pageBoundSize;
+		if (pageStartsWith < 1) {
+			pageStartsWith = 1;
+		}
+		int pageEndsWith = page + pageBoundSize;
+		if (pageEndsWith > totalPage) {
+			pageEndsWith = totalPage;
+		}
 
-		List<Article> articles = articleService.getForPrintArticles(page, itemsInAPage);
-		model.addAttribute("articles", articles);
+		model.addAttribute("pageStartsWith", pageStartsWith);
+		model.addAttribute("pageEndsWith", pageEndsWith);
+
+		boolean beforeMorePages = pageStartsWith > 1;
+		boolean afterMorePages = pageEndsWith < totalPage;
+
+		model.addAttribute("beforeMorePages", beforeMorePages);
+		model.addAttribute("afterMorePages", afterMorePages);
+		model.addAttribute("pageBoundSize", pageBoundSize);
+
+		model.addAttribute("needToShowPageBtnToFirst", page != 1);
+		model.addAttribute("needToShowPageBtnToLast", page != totalPage);
+
+		
 
 		return "article/list";
 	}
@@ -70,7 +110,6 @@ public class ArticleController {
 		return "redirect:" + redirectUri;
 	}
 
-	
 	// 게시물삭제
 	@RequestMapping("/usr/article/delete")
 	@ResponseBody

@@ -10,7 +10,7 @@ import com.sbs.rko.at.dto.Article;
 
 @Mapper
 public interface ArticleDao {
-	List<Article> getForPrintArticles(int limitFrom, int itemsInAPage);
+	List<Article> getForPrintArticles(Map<String, Object> param);
 
 	Article getForPrintArticleById(@Param("id") int id);
 
@@ -20,7 +20,7 @@ public interface ArticleDao {
 
 	void modify(Map<String, Object> param);
 
-	int getTotalCount(String searchKeywordType, String searchKeyword);
+	int getTotalCount(Map<String, Object> param);
 
 	
 

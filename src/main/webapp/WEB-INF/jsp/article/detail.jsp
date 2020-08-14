@@ -35,10 +35,34 @@
 				<th>제목</th>
 				<td>${article.title}</td>
 			</tr>
-			<tr style="height: 200px;">
+			<tr>
 				<th>내용</th>
 				<td>${article.body}</td>
 			</tr>
+			<c:if test="${article.extra.file__common__attachment['1'] != null}">
+				<tr>
+					<th>첨부 파일 1</th>
+					<td>
+						<div class="video-box">
+							<video controls
+								src="/usr/file/streamVideo?id=${article.extra.file__common__attachment['1'].id}">
+							</video>
+						</div>
+					</td>
+				</tr>
+			</c:if>
+			<c:if test="${article.extra.file__common__attachment['2'] != null}">
+				<tr>
+					<th>첨부 파일 2</th>
+					<td>
+						<div class="video-box">
+							<video controls
+								src="/usr/file/streamVideo?id=${article.extra.file__common__attachment['2'].id}">
+							</video>
+						</div>
+					</td>
+				</tr>
+			</c:if>
 		</tbody>
 	</table>
 	<div class="bnt_direct">
@@ -246,7 +270,7 @@
 			ReplyList__lastLodedId = data.body.replies[data.body.replies.length - 1].id;
 			ReplyList__drawReplies(data.body.replies);
 		}
-		setTimeout(ReplyList__loadMore, 2000);
+		setTimeout(ReplyList__loadMore, ReplyList__loadMoreInterval);
 	}
 	function ReplyList__loadMore() {
 		$.get('getForPrintReplies', {
@@ -272,6 +296,9 @@
 			$tr.remove();
 		}, 'json');
 	}
+	//10초
+	ReplyList__loadMoreInterval = 10 * 1000;
+	
 	function ReplyList__drawReply(reply) {
 		var html = '';
 		html += '<tr data-id="' + reply.id + '">';

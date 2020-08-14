@@ -11,10 +11,22 @@ ${urlEncodedRequesturiQueryString}
 	<div class="flex w_bnt_sbar">
 		<div class="common_bnt" style="margin:0;"><a href="write" >게시글 작성</a></div>
 		<div class="searchbar">
-			<form action="/usr/article/list">
+			<form action="" name="searchForm">
+				<select name="searchType" class="search">
+					<option value="title">제목</option>
+					<option value="body">내용</option>
+					<option value="titleAndBody">제목+내용</option>
+				</select>
+				<script>
+					if ( typeof param.searchType == 'undefined' ) {
+						param.searchType = 'title';
+					}
+					
+					$('form[name="searchForm"] select[name="searchType"]').val(param.searchType);
+				</script>
 				<input type="hidden" name="page" value="1" />
-				<input type="hidden" name="searchKeywordType" value="title" /> 
 				<input type="text" name="searchKeyword" value="${param.searchKeyword}" placeholder="검색어를 입력하세요" class="search">
+			
 				<button>
 					<i class="fa fa-search"></i>
 				</button>

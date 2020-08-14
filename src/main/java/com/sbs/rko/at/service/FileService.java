@@ -21,7 +21,7 @@ public class FileService {
 			String originFileName, String fileExtTypeCode, String fileExtType2Code, String fileExt, byte[] body,
 			int fileSize) {
 
-		Map<String, Object> param = new HashMap();
+		Map<String, Object> param = new HashMap<>();
 		param.put("relTypeCode", relTypeCode);
 		param.put("relId", relId);
 		param.put("typeCode", typeCode);
@@ -84,5 +84,10 @@ public class FileService {
 		}
 
 		return rs;
+	}
+
+	public List<File> getFilesMapKeyFileNo(String relTypeCode, int relId, String typeCode, String type2Code) {
+		List<File> files = fileDao.getFilesRelTypeCodeAndRelIdAndTypeCodeAndType2Code(relTypeCode, relId, typeCode, type2Code);
+		return files;
 	}
 }

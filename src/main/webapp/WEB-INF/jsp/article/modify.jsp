@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="con_butt" style="margin-top: 10px;">
-			<div class="input btn">
+			<div class="input butt">
 				<input type="submit" class="write_bnt" value="전송" /> <input
 					class="write_bnt" type="button" onClick="cencle()" value="취소" />
 			</div>

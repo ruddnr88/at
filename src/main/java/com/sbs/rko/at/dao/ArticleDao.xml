@@ -7,8 +7,23 @@
 		SELECT *
 		FROM article
 		WHERE displayStatus = 1
+			<choose>
+			<when test="searchType == 'title'">
+				AND title LIKE CONCAT('%',#{searchKeyword},'%')
+			</when>
+			<when test="searchType == 'body'">
+				AND body LIKE CONCAT('%',#{searchKeyword},'%')
+			</when>
+			<when test="searchType == 'titleAndBody'">
+				AND (title LIKE CONCAT('%',#{searchKeyword},'%') OR
+				body LIKE CONCAT('%',#{searchKeyword},'%'))
+			</when>
+		</choose>
 		ORDER BY id DESC
-		LIMIT #{limitFrom}, #{itemsInAPage}
+		<if test="limitCount != null">
+			LIMIT #{limitFrom}, #{limitCount}
+		</if>
+	
 	</select>
 
 	<select id="getForPrintArticleById" resultType="Article">
@@ -19,10 +34,21 @@
 
 	
 	<select id="getTotalCount" parameterType="map" resultType="int">
-		SELECT COUNT(*)
+		SELECT COUNT(*) 
 		FROM article
 		WHERE displayStatus = 1
-		AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+		<choose>
+			<when test="searchType == 'title'">
+				AND title LIKE CONCAT('%',#{searchKeyword},'%')
+			</when>
+			<when test="searchType == 'body'">
+				AND body LIKE CONCAT('%',#{searchKeyword},'%')
+			</when>
+			<when test="searchType == 'titleAndBody'">
+				AND (title LIKE CONCAT('%',#{searchKeyword},'%') OR
+				body LIKE CONCAT('%',#{searchKeyword},'%'))
+			</when>
+		</choose>
 	</select>
 	
 	<insert id="write" useGeneratedKeys="true"
